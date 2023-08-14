@@ -37,24 +37,40 @@ while running:
 
     if is_mouse_clicked:
         current_mouse_position = pygame.mouse.get_pos()
-        pygame.draw.circle(screen, "white", original_mouse_position, 5)
         delta_x = (current_mouse_position[0] - original_mouse_position[0]) * 5
         delta_y = (current_mouse_position[1] - original_mouse_position[1]) * 5
 
-        if delta_x > 300:
-            delta_x = 300
-        elif delta_x < -300:
-            delta_x = -300
-        if delta_y > 300:
-            delta_y = 300
-        elif delta_y < -300:
-            delta_y = -300
+        # if delta_x > 60:
+        #     delta_x = 60
+        # elif delta_x < -60:
+        #     delta_x = -60
+        # if delta_y > 60:
+        #     delta_y = 60
+        # elif delta_y < -60:
+        #     delta_y = -60
 
+        current_mouse_distance = pygame.math.Vector2(
+            current_mouse_position[0] - original_mouse_position[0],
+            current_mouse_position[1] - original_mouse_position[1]
+        ).length()
+
+        if current_mouse_distance > 60:
+            scale_factor = 60 / current_mouse_distance
+            delta_x *= scale_factor
+            delta_y *= scale_factor
+            current_mouse_position = (
+                int(original_mouse_position[0] + scale_factor * (current_mouse_position[0] - original_mouse_position[0])),
+                int(original_mouse_position[1] + scale_factor * (current_mouse_position[1] - original_mouse_position[1]))
+            )
+            pygame.mouse.set_pos(current_mouse_position)
+        
         player3_pos = (
             player3_pos[0] + delta_x * dt,
             player3_pos[1] + delta_y * dt
         )
-
+        
+        pygame.draw.circle(screen, "grey", original_mouse_position, 60)
+        pygame.draw.circle(screen, "white", current_mouse_position, 5)
 
     pygame.draw.circle(screen, "red", player_pos, 40)
     pygame.draw.circle(screen, "blue", player2_pos, 20)
